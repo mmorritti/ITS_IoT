@@ -27,60 +27,61 @@
   http://www.arduino.cc/en/Tutorial/Debounce
 */
 
-// constants won't change. They're used here to set pin numbers:
-const int buttonPin = 6;    // the number of the pushbutton pin
-const int ledPin = 5;      // the number of the LED pin
+
+const int buttonPin = 6;    // numero pin bottone
+const int ledPin = 5;      // numer pin led
 
 // Variables will change:
-int ledState = HIGH;         // the current state of the output pin
-int buttonState;             // the current reading from the input pin
-int lastButtonState = LOW;   // the previous reading from the input pin
+int ledState = HIGH;         // stato corrente del pin in output
+int buttonState;             // stato corrente del bottone in inpunt
+int lastButtonState = LOW;   // la lettura precedente dal pin di input
 
-// the following variables are unsigned longs because the time, measured in
-// milliseconds, will quickly become a bigger number than can be stored in an int.
-unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+// le seguenti variabili sono long senza segno perché il tempo, misurato in
+// millisecondi, diventerà rapidamente un numero maggiore di quello che può essere memorizzato in un int.
+unsigned long lastDebounceTime = 0;  // l'ultima volta che il pin di uscita è stato attivato
+unsigned long debounceDelay = 50;    // il tempo di rimbalzo; aumenta se lo sfarfallio dell'output
+
 
 void setup() {
   pinMode(buttonPin, INPUT);
   pinMode(ledPin, OUTPUT);
 
-  // set initial LED state
+  // imposta lo stato iniziale del LED
   digitalWrite(ledPin, ledState);
 }
 
 void loop() {
-  // read the state of the switch into a local variable:
+  // legge lo stato dello switch in una variabile locale:
   int reading = digitalRead(buttonPin);
 
-  // check to see if you just pressed the button
-  // (i.e. the input went from LOW to HIGH), and you've waited long enough
-  // since the last press to ignore any noise:
-
-  // If the switch changed, due to noise or pressing:
+  // controlla se hai appena premuto il pulsante
+  // (ovvero l'ingresso è passato da BASSO a ALTO) e hai aspettato abbastanza a lungo
+  // dall'ultima pressione per ignorare qualsiasi rumore:
+   
+  // Se l'interruttore è cambiato, a causa del rumore o premendo:
   if (reading != lastButtonState) {
-    // reset the debouncing timer
+    // resettare il timer di debouncing
     lastDebounceTime = millis(); 
   }
 
   if ((millis() - lastDebounceTime) > debounceDelay) {
-    // whatever the reading is at, it's been there for longer than the debounce
-    // delay, so take it as the actual current state:
+    // qualunque sia la lettura, è lì da più tempo del rimbalzo
+     // ritardo, quindi prendilo come lo stato attuale attuale:
 
-    // if the button state has changed:
+    // se lo stato del pulsante è cambiato:
     if (reading != buttonState) {
       buttonState = reading;
 
-      // only toggle the LED if the new button state is HIGH
+     // attiva o disattiva il LED solo se il nuovo stato del pulsante è ALTO
       if (buttonState == HIGH) {
         ledState = !ledState;
       }
     }
   }
 
-  // set the LED:
+  // setta il led
   digitalWrite(ledPin, ledState);
 
-  // save the reading. Next time through the loop, it'll be the lastButtonState:
+  // salva la lettura. La prossima volta attraverso il ciclo, sarà l'ultimoButtonState:
   lastButtonState = reading;
 }
